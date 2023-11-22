@@ -9,10 +9,14 @@ function Notes() {
     async function fetchNotes() {
         const response = await fetch("http://localhost:4000/notes");
         const data = await response.json();
-        setNotes(data.reverse())
-        if (!(curNote)) {
-            setCurrentNote(data.at(-1))
-        }
+        try {
+            setNotes(data.reverse())
+            if (!(curNote)) {
+                setCurrentNote(data.at(-1))
+            }
+        } catch (error) {
+            setNotes(null)
+        } 
     }
 
     useEffect(function () {
@@ -50,7 +54,7 @@ function Notes() {
             <aside className="Side">
                 <button className="Button-create-note" onClick={newNote}>Créer une note</button>
                 {notes !== null ? notes.map((note) => 
-                    <button className="Note-link" onClick={updateCurrentNote}>
+                    <button className="Note-link" onClick={updateCurrentNote} key={note["id"]}>
                         <div>{note["name"]}</div>
                         <div className="Note-link-lastUpdatedAt">{note["updated"]}</div>
                     </button>) 
