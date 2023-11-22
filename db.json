@@ -1,0 +1,45 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "notes": [
+    {
+      "name": "New Note",
+      "text": "My super new note !",
+      "updated": "2023-11-22T21:45:54.668Z",
+      "id": 1
+    },
+    {
+      "name": "New Note",
+      "text": "My super new note !",
+      "updated": "2023-11-22T21:46:56.109Z",
+      "id": 2
+    },
+    {
+      "name": "New Note",
+      "text": "My super new note !",
+      "updated": "2023-11-22T21:56:57.124Z",
+      "id": 3
+    },
+    {
+      "name": "New Note",
+      "text": "My super new note !",
+      "updated": "2023-11-22T21:56:57.264Z",
+      "id": 4
+    }
+  ]
+}

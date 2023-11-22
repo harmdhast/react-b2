@@ -1,0 +1,93 @@
+.App {
+  padding: 80px 30px 30px;
+  text-align: center;
+}
+
+.App-navigation {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  background-color: black;
+  color: white;
+  z-index: 99999;
+}
+
+.App-navigation a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.App-error {
+  color: red;
+}
+
+.Side {
+  position: fixed;
+  width: 240px;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  column-gap: 10px;
+  row-gap: 10px;
+  background-color: rgb(29, 35, 39);
+  padding-top: 60px;
+}
+
+.Loading {
+  text-align: center;
+  padding: 16px;
+}
+
+.Main {
+  height: 100vh;
+  margin-inline-start: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.Note-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  color: inherit;
+  text-decoration: inherit;
+  font-weight: bold;
+}
+
+.Note-link.active {
+  background-color: darkslategrey;
+}
+
+.Note-link-lastUpdatedAt {
+  font-size: 10px;
+  color: darkgrey;
+}
+
+.Button-create-note {
+  font-size: 24px;
+  background-color: rgb(44, 51, 56);
+}
+
+
+.Temperature {
+  padding: 8px;
+  font-size: 10px;
+  color: darkgrey;
+}
+
+.NoteContent {
+  width: 80%;
+  padding: 10px;
+  resize: none;
+}
