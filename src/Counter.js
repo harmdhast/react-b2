@@ -1,9 +1,7 @@
 import { useState } from "react";
 
-function Counter({counter = 0}) {
-  const [count, setCount] = useState(counter);
+function Counter({count, setCount}) {
   const [isError, setIsError] = useState(false);
-  
 
   return (
     <div className="App">
