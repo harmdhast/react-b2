@@ -6,6 +6,9 @@ function Notes() {
     const [notes, setNotes] = useState(null);
     const [curNote, setCurrentNote] = useState(null);
 
+
+
+
     async function fetchNotes() {
         const response = await fetch("http://localhost:4000/notes");
         const data = await response.json();
@@ -16,7 +19,11 @@ function Notes() {
             }
         } catch (error) {
             setNotes(null)
-        } 
+        }
+    }
+
+    async function postNotes() {
+        await fetch("http://localhost:4000/notes", { method: "POST", body: JSON.stringify(notes) });
     }
 
     useEffect(function () {
@@ -25,11 +32,11 @@ function Notes() {
 
     function newNote() {
         fetch("http://localhost:4000/notes", {
-        method: "post",
-        headers: {
-            'Content-Type': 'application/json',
-         },
-        body: JSON.stringify({
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
                 "name": "New Note",
                 "text": "My super new note !",
                 "updated": new Date()
@@ -53,12 +60,12 @@ function Notes() {
         <>
             <aside className="Side">
                 <button className="Button-create-note" onClick={newNote}>Créer une note</button>
-                {notes !== null ? notes.map((note) => 
+                {notes !== null ? notes.map((note) =>
                     <button className="Note-link" onClick={updateCurrentNote} key={note["id"]}>
                         <div>{note["name"]}</div>
                         <div className="Note-link-lastUpdatedAt">{note["updated"]}</div>
-                    </button>) 
-                : null}
+                    </button>)
+                    : null}
             </aside>
             <main className="Main">
                 <textarea className="NoteContent" defaultValue={notes !== null ? notes.at(-1)["text"] : ""} rows="20"></textarea>

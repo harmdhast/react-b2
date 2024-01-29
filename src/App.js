@@ -10,18 +10,16 @@ function App() {
   const [count, setCount] = useState(0);
   return (
     <BrowserRouter>
-      <nav className="App-navigation">
+      <nav className="bg-slate-900 flex gap-4 p-4 text-white">
         <Link to="/">Compteur</Link>
         <Link to="/names">Générateur de noms</Link>
         <Link to="/notes">Notes</Link>
       </nav>
-      <div>
-        <Routes>
-          <Route path="/" element={<Counter count={count} setCount={setCount} />} />
-          <Route path="/names" element={<Names/>} />
-          <Route path="/notes" element={<Notes/>} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Counter count={count} setCount={setCount} />} />
+        <Route path="/names" element={<Names />} />
+        <Route path="/notes" element={<Notes />} />
+      </Routes>
     </BrowserRouter>
   );
 }
