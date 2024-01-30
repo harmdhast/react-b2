@@ -59,5 +59,4 @@ function Counter({ count, setCount }) {
     );
 }
 
-// <animated.div className={"text-9xl tabular-nums " + (isError ? "text-red-500" : "text-white")} style={props}>{count}</animated.div>
 export default Counter;
