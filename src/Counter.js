@@ -1,21 +1,30 @@
 import { useState } from "react";
 import { PlusIcon, MinusIcon } from "@radix-ui/react-icons"
-import { useTransition, animated, to } from '@react-spring/web'
+import { useTransition, animated, to, useSpring, useSpringRef } from '@react-spring/web'
 
 import { Button } from "@/components/ui/button"
 
 function Counter({ count, setCount }) {
-    const [isError, setIsError] = useState(false);
     const [forward, setForward] = useState(true);
 
     function changeCount(val) {
         if (count + val < 0) {
-            return setIsError(true);
+            api.set({ color: 0 });
+            api.start({ color: 1 });
+            return;
         }
         setForward(val < 0);
         setCount(count + val);
-        setIsError(false);
     }
+
+    const api = useSpringRef();
+    const { color: errorColor } = useSpring({
+        ref: api,
+        from: { color: 0 },
+        color: 0,
+        config: { duration: 400 },
+        reset: true
+    });
 
     const transitions = useTransition([count], {
         from: { position: forward ? '100%' : '-100%', opacity: 0, rotation: '90deg' },
@@ -35,8 +44,12 @@ function Counter({ count, setCount }) {
                 {
                     transitions((style, item) => (
                         <animated.div
-                            className={"text-9xl tabular-nums text-center " + (isError ? "text-red-500" : "text-white")}
+                            className="text-9xl tabular-nums text-center"
                             style={{
+                                color: errorColor.to({
+                                    range: [0, 0.25, 0.5, 0.75, 1],
+                                    output: ["white", "red", "white", "red", "white"]
+                                }),
                                 position: "absolute",
                                 left: 0,
                                 right: 0,
