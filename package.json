@@ -27,7 +27,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "tailwind": "npx tailwindcss -i ./src/globals.css -o ./public/output.css --watch"
+    "tailwind": "npx tailwindcss -i ./src/globals.css -o ./public/output.css --watch",
+    "json": "npx json-server db.json --port 4000"
   },
   "eslintConfig": {
     "extends": [

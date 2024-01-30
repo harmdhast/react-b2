@@ -4,7 +4,6 @@ import { useState } from "react";
 import Counter from "./Counter";
 import Names from "./Names";
 import Notes from "./Notes";
-import './App.css';
 
 function App() {
   const [count, setCount] = useState(0);

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import "./App.css";
-
 function Notes() {
     const [notes, setNotes] = useState(null);
     const [curNote, setCurrentNote] = useState(null);
