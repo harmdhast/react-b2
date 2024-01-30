@@ -31,17 +31,18 @@ function Counter({ count, setCount }) {
                 <MinusIcon className="h-16 w-16" />
             </Button>
 
-            <div className="tabular-nums" style={{
-                width: String(count).length + "rem"
-            }}>
+            <div className="tabular-nums w-96 h-32">
                 {
                     transitions((style, item) => (
                         <animated.div
                             className={"text-9xl tabular-nums text-center " + (isError ? "text-red-500" : "text-white")}
                             style={{
-                                height: "2rem",
-                                overflow: "visible",
-                                //width: (item / 10) + "rem",
+                                position: "absolute",
+                                left: 0,
+                                right: 0,
+                                "margin-left": "auto",
+                                "margin-right": "auto",
+                                width: "30%",
                                 transform: to([style.position, style.rotation], (p, s) => `translateY(${p}) rotateX(${s})`),
                                 opacity: style.opacity
                             }}>
