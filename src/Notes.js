@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea"
-import { Button } from "../components/ui/button";
+import { Button } from "./components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -21,8 +21,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { MarkdownViewer } from "./MarkdownViewer";
-import { useDebouncedEffect } from "./useDebouncedEffect";
+import { MarkdownViewer } from "@/components/notes/MarkdownViewer";
+import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
 function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const [nameInputValue, setNameInputValue] = useState("");
     const [textInputValue, setTextInputValue] = useState("");
@@ -218,8 +218,9 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     };
 
     useEffect(() => {
-        if (prevNote && curNote !== null && prevNote.id !== curNote.id && prevNote["changed"]) {
+        if (prevNote && curNote !== null && prevNote.id !== curNote.id && prevNote["changed"] === true) {
             saveNote(prevNote.id);
+            setPrevNote({ ...prevNote, changed: false })
         }
         // Check if curNote is not null before updating the input value
         if (curNote !== null) {

@@ -5,7 +5,7 @@ import { UserProfile } from "./UserProfile";
 
 import Counter from "./Counter";
 import Names from "./Names";
-import Notes from "./notes/Notes";
+import Notes from "./Notes";
 
 function App() {
     const [notes, setNotes] = useState(null);

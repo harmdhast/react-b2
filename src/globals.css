@@ -12,8 +12,3 @@ html,
     display: flex;
     flex-direction: column;
 }
-
-/* Dirty fix for markdown plugin */
-.markdown>* {
-    all: revert;
-}
