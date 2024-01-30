@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "../components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { PlusCircledIcon, TrashIcon, StarFilledIcon, StarIcon, CheckboxIcon } from "@radix-ui/react-icons";
+import { PlusCircledIcon, TrashIcon, StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input"
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
@@ -26,23 +26,28 @@ function Notes() {
 
     const { id } = useParams();
 
-    console.log(id);
-
     async function fetchNotes() {
-        const response = await fetch("http://localhost:4000/notes");
+        const response = await fetch("http://localhost:4000/notes?_sort=updated&_order=desc");
         const data = await response.json();
         try {
-            await data.sort(((a, b) => a.updated - b.updated));
+            //await data.sort(((a, b) => a.updated - b.updated));
             setNotes(data);
-            if (id) {
-                let note = await data.find(v => v.id == id)
-                if (note) {
-                    return setCurrentNote(note);
-                }
-                return navigate("/notes");
-            }
         } catch (error) {
             return;
+        }
+    }
+
+    async function changeNote() {
+        if (id) {
+            let note = await notes.find(n => n.id == id);
+            if (note) {
+                return setCurrentNote(note);
+            }
+            return navigate("/notes");
+        } else {
+            setNameInputValue("");
+            setTextInputValue("");
+            return setCurrentNote(null);
         }
     }
 
@@ -54,12 +59,19 @@ function Notes() {
         });
     }
 
-
+    useEffect(() => {
+        changeNote();
+    }, [id]);
 
 
     useEffect(() => {
         fetchNotes();
-    }, [id]);
+    }, []);
+
+    async function getLastNote() {
+        const resp =  await fetch("http://localhost:4000/notes?_sort=updated&_order=desc&_limit=1");
+        return await resp.json();
+    }
 
     async function newNote() {
         await fetch("http://localhost:4000/notes", {
@@ -70,19 +82,15 @@ function Notes() {
             body: JSON.stringify({
                 "name": "Mon titre",
                 "text": "Ma super nouvelle note !",
-                "updated": new Date()
+                "created": new Date().getTime(),
+                "updated": new Date().getTime()
             })
         })
-        //console.log(result);
+
         await fetchNotes();
-        console.log(notes);
-        let note = notes.reduce((mostRecent, item) =>
-            item.updated > mostRecent.updated
-                ? item
-                : mostRecent
-        )
-        console.log(note);
-        navigate(`/notes/${note.id}`);
+        let note = await getLastNote();
+        navigate(`/notes/${note[0].id}`);
+        changeNote();
     };
 
     function updateCurrentNote(e) {
@@ -142,9 +150,6 @@ function Notes() {
         }
     }, [curNote]);
 
-    // function updateNote() {
-    // }
-
     return (
         <div className="bg-slate-900 h-full text-white gap-1 pt-4">
             <div className="container h-full flex flex-row grow gap-4">
@@ -152,14 +157,14 @@ function Notes() {
                     <Button className="flex flex-row w-full rounded-none rounded-t font-bold" onClick={newNote}>
                         <PlusCircledIcon className="mr-2 w-5 h-5" />Nouvelle note
                     </Button>
-                    <ScrollArea className=" h-5/6 rounded-none rounded-b border border-slate-800">
+                    <ScrollArea className=" h-5/6 rounded-none rounded-b border border-slate-800 border-t-0">
                         {notes !== null ? notes.map((note) =>
-                            <Link to={"/notes/" + note["id"]} className={"flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + (curNote && note["id"] === curNote["id"] ? "bg-gray-100 text-black dark:hover:bg-gray-100 dark:hover:text-black" : "")} key={note["id"]}>
+                            <Link to={"/notes/" + note["id"]} className={"flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + (curNote && note["id"] === curNote["id"] ? " border-l-8 dark:border-l-gray-50 " : "")} key={note["id"]}>
                                 <div className="m-1 flex flex-col text-left">
                                     <div className=" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis">{note["name"]}</div>
                                     <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
                                 </div>
-                                <div className="h-full flex flex-row gap-1">
+                                <div className="h-full flex flex-row gap-2">
 
                                     <Button variant="outline" size="icon" asChild>
                                         <AlertDialog>
