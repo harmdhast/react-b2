@@ -106,15 +106,18 @@ function Notes() {
     }
 
     async function saveNote(id) {
-
+        let newNote = {
+            ...curNote,
+            updated: new Date().getTime()
+        }
         await fetch(`http://localhost:4000/notes/${id}`, {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(curNote)
+            body: JSON.stringify(newNote)
         });
-        setNotes([...notes.filter(n => n.id !== id), curNote]);
+        setNotes([newNote, ...notes.filter(n => n.id !== id)]);
     }
 
     // Update the name and text properties of a specific note
