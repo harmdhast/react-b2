@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/components/ui/use-toast"
 import { PlusCircledIcon, TrashIcon, StarFilledIcon, StarIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input"
@@ -25,6 +26,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const [nameInputValue, setNameInputValue] = useState("");
     const [textInputValue, setTextInputValue] = useState("");
     const [isMarkdown, setMarkdown] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const { toast } = useToast()
 
     let navigate = useNavigate();
@@ -70,7 +72,9 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
 
 
     useEffect(() => {
-        fetchNotes();
+        fetchNotes().then(() => {
+            setLoading(false)
+        });
     }, []);
 
     async function getLastNote() {
@@ -212,58 +216,61 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
 
     return (
         <div className="bg-slate-900 h-full text-white gap-1 pt-4">
+
             <div className="container h-full flex flex-row grow gap-4">
                 <aside className="w-2/6">
                     <Button className="flex flex-row w-full rounded-none rounded-t font-bold" onClick={newNote}>
                         <PlusCircledIcon className="mr-2 w-5 h-5" />Nouvelle note
                     </Button>
-                    <ScrollArea className=" h-5/6 rounded-none rounded-b border border-slate-800 border-t-0">
-                        {notes !== null ? notes.map((note) =>
-                            <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
-                                <div className="m-1 flex flex-col text-left">
-                                    <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
-                                    <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
-                                </div>
-                                <div className="h-full flex flex-row gap-2 justify-center items-center">
+                    {isLoading ? <Loader className="h-5/6"></Loader> :
+                        <ScrollArea className=" h-5/6 rounded-none rounded-b border border-slate-800 border-t-0">
+                            {
+                                notes.map((note) =>
+                                    <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
+                                        <div className="m-1 flex flex-col text-left">
+                                            <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
+                                            <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
+                                        </div>
+                                        <div className="h-full flex flex-row gap-2 justify-center items-center">
 
-                                    <Button variant="outline" size="icon" asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></AlertDialogTrigger>
-                                            <AlertDialogContent className="dark:bg-slate-900">
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle className="text-red-600">Supprimer la note ?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        Voulez-vous envoyer la note à jamais avec papa Johnny ?
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel className="dark:bg-white">Annuler</AlertDialogCancel>
-                                                    <AlertDialogAction className="dark:bg-red-600 dark:text-white dark:hover:bg-red-800" onClick={() => { deleteNote(note["id"]) }}>Supprimer</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                            <Button variant="outline" size="icon" asChild>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></AlertDialogTrigger>
+                                                    <AlertDialogContent className="dark:bg-slate-900">
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle className="text-red-600">Supprimer la note ?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                Voulez-vous envoyer la note à jamais avec papa Johnny ?
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel className="dark:bg-white">Annuler</AlertDialogCancel>
+                                                            <AlertDialogAction className="dark:bg-red-600 dark:text-white dark:hover:bg-red-800" onClick={() => { deleteNote(note["id"]) }}>Supprimer</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
 
 
-                                    </Button>
-                                    <Checkbox
-                                        id="checked"
-                                        onClick={() => { checkNote(note["id"]) }}
-                                        checked={note["checked"]}
-                                        className="dark:data-[state=checked]:bg-green-300 dark:data-[state=checked]:border-green-300 w-7 h-7 text-3xl"
-                                    />
-                                    <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
-                                        {
-                                            note["starred"] ?
-                                                <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
-                                                <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
-                                        }
+                                            </Button>
+                                            <Checkbox
+                                                id="checked"
+                                                onClick={() => { checkNote(note["id"]) }}
+                                                checked={note["checked"]}
+                                                className="dark:data-[state=checked]:bg-green-300 dark:data-[state=checked]:border-green-300 w-7 h-7 text-3xl"
+                                            />
+                                            <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
+                                                {
+                                                    note["starred"] ?
+                                                        <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
+                                                        <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
+                                                }
 
-                                    </Button>
+                                            </Button>
 
-                                </div>
-                            </Link>)
-                            : null}
-                    </ScrollArea>
+                                        </div>
+                                    </Link>)
+                            }
+                        </ScrollArea>}
 
                 </aside>
                 <main className="w-4/6">
