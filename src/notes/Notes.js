@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "../components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { PlusCircledIcon, TrashIcon, StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useToast } from "@/components/ui/use-toast"
+import { PlusCircledIcon, TrashIcon, StarFilledIcon, StarIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input"
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
@@ -16,18 +20,19 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-function Notes() {
-    const [notes, setNotes] = useState([]);
-    const [curNote, setCurrentNote] = useState(null);
+import { MarkdownViewer } from "./MarkdownViewer";
+function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const [nameInputValue, setNameInputValue] = useState("");
     const [textInputValue, setTextInputValue] = useState("");
+    const [isMarkdown, setMarkdown] = useState(false);
+    const { toast } = useToast()
 
     let navigate = useNavigate();
 
     const { id } = useParams();
 
     async function fetchNotes() {
-        const response = await fetch("http://localhost:4000/notes?_sort=updated&_order=desc");
+        const response = await fetch("http://localhost:4000/notes?_sort=starred,updated&_order=desc,desc");
         const data = await response.json();
         try {
             //await data.sort(((a, b) => a.updated - b.updated));
@@ -38,7 +43,7 @@ function Notes() {
     }
 
     async function changeNote() {
-        if (id) {
+        if (id && notes) {
             let note = await notes.find(n => n.id == id);
             if (note) {
                 return setCurrentNote(note);
@@ -61,7 +66,7 @@ function Notes() {
 
     useEffect(() => {
         changeNote();
-    }, [id]);
+    }, [id, notes]);
 
 
     useEffect(() => {
@@ -69,7 +74,7 @@ function Notes() {
     }, []);
 
     async function getLastNote() {
-        const resp =  await fetch("http://localhost:4000/notes?_sort=updated&_order=desc&_limit=1");
+        const resp = await fetch("http://localhost:4000/notes?_sort=updated&_order=desc&_limit=1");
         return await resp.json();
     }
 
@@ -80,10 +85,12 @@ function Notes() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "name": "Mon titre",
+                "name": "Nouvelle note",
                 "text": "Ma super nouvelle note !",
                 "created": new Date().getTime(),
-                "updated": new Date().getTime()
+                "updated": new Date().getTime(),
+                "starred": false,
+                "checked": false
             })
         })
 
@@ -91,6 +98,7 @@ function Notes() {
         let note = await getLastNote();
         navigate(`/notes/${note[0].id}`);
         changeNote();
+        // TODO: Focus et selectionner le titre de la nouvelle note
     };
 
     function updateCurrentNote(e) {
@@ -101,7 +109,7 @@ function Notes() {
         await fetch(`http://localhost:4000/notes/${id}`, {
             method: "DELETE"
         });
-        setNotes(notes.filter(n => n.id !== id));
+        setNotesWrapper(notes.filter(n => n.id !== id));
         navigate(`/notes`);
     }
 
@@ -110,14 +118,63 @@ function Notes() {
             ...curNote,
             updated: new Date().getTime()
         }
-        await fetch(`http://localhost:4000/notes/${id}`, {
+        fetch(`http://localhost:4000/notes/${id}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newNote)
+        }).then(() => {
+            toast({
+                title: "Note enregistrée.",
+                description: `${newNote["name"]} sauvegardée avec succès.`,
+                variant: "success"
+            })
+        });
+        setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
+        //fetchNotes();
+    }
+
+    async function setNotesWrapper(newNotes) {
+        newNotes.sort((a, b) =>
+            b.updated - a.updated + (b.starred ? 10000000 : 0) + (a.starred ? -10000000 : 0)
+        )
+        setNotes(newNotes)
+    }
+
+    async function starNote(id) {
+        let note = notes.find(n => n.id === id)
+        let newNote = {
+            ...note,
+            starred: !note["starred"],
+            updated: new Date().getTime()
+        }
+        fetch(`http://localhost:4000/notes/${id}`, {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(newNote)
         });
-        setNotes([newNote, ...notes.filter(n => n.id !== id)]);
+        setCurrentNote(newNote);
+        setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
+    }
+
+    async function checkNote(id) {
+        let note = notes.find(n => n.id === id)
+        let newNote = {
+            ...note,
+            checked: !note["checked"]
+        }
+        fetch(`http://localhost:4000/notes/${id}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newNote)
+        });
+        setCurrentNote(newNote);
+        setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
     }
 
     // Update the name and text properties of a specific note
@@ -156,22 +213,22 @@ function Notes() {
     return (
         <div className="bg-slate-900 h-full text-white gap-1 pt-4">
             <div className="container h-full flex flex-row grow gap-4">
-                <aside className="w-1/4">
+                <aside className="w-2/6">
                     <Button className="flex flex-row w-full rounded-none rounded-t font-bold" onClick={newNote}>
                         <PlusCircledIcon className="mr-2 w-5 h-5" />Nouvelle note
                     </Button>
                     <ScrollArea className=" h-5/6 rounded-none rounded-b border border-slate-800 border-t-0">
                         {notes !== null ? notes.map((note) =>
-                            <Link to={"/notes/" + note["id"]} className={"flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + (curNote && note["id"] === curNote["id"] ? " border-l-8 dark:border-l-gray-50 " : "")} key={note["id"]}>
+                            <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
                                 <div className="m-1 flex flex-col text-left">
-                                    <div className=" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis">{note["name"]}</div>
+                                    <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
                                     <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
                                 </div>
-                                <div className="h-full flex flex-row gap-2">
+                                <div className="h-full flex flex-row gap-2 justify-center items-center">
 
                                     <Button variant="outline" size="icon" asChild>
                                         <AlertDialog>
-                                            <AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></AlertDialogTrigger>
+                                            <AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></AlertDialogTrigger>
                                             <AlertDialogContent className="dark:bg-slate-900">
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle className="text-red-600">Supprimer la note ?</AlertDialogTitle>
@@ -188,9 +245,15 @@ function Notes() {
 
 
                                     </Button>
-                                    <Button variant="outline" size="icon" asChild onClick={() => { /*deleteNote(note["id"])*/ }}>
+                                    <Checkbox
+                                        id="checked"
+                                        onClick={() => { checkNote(note["id"]) }}
+                                        checked={note["checked"]}
+                                        className="dark:data-[state=checked]:bg-green-300 dark:data-[state=checked]:border-green-300 w-7 h-7 text-3xl"
+                                    />
+                                    <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
                                         {
-                                            note["is_starred"] ?
+                                            note["starred"] ?
                                                 <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
                                                 <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
                                         }
@@ -203,8 +266,8 @@ function Notes() {
                     </ScrollArea>
 
                 </aside>
-                <main className="w-3/4">
-                    <div className="flex flex-row rounded-none rounded-t bg-white h-9 border dark:border-white text-black font-bold">
+                <main className="w-4/6">
+                    <div className={"flex flex-row rounded-none rounded-t h-9 border text-black font-bold " + ((curNote && curNote["checked"]) ? "bg-green-300 dark:border-green-300" : "bg-white dark:border-white")}>
                         <Input
                             type="text"
                             placeholder=""
@@ -220,23 +283,34 @@ function Notes() {
                             }}
                         />
                         <div className="flex flex-row grow items-center justify-end">
+                            <div className="flex items-center space-x-2">
+                                <Switch id="airplane-mode" checked={isMarkdown} onClick={() => setMarkdown(!isMarkdown)} />
+                                <Label htmlFor="airplane-mode"><ReaderIcon className="w-7 h-7"></ReaderIcon></Label>
+                            </div>
                             <Button disabled={curNote === null} variant="ghost" className="rounded-none mr-2" onClick={() => { saveNote(curNote["id"]) }}>
                                 Save
                             </Button>
 
+
                         </div>
                     </div>
-                    <Textarea
-                        placeholder="Choisissez ou créez une note !"
-                        className="resize-none rounded-none rounded-b h-5/6"
-                        //defaultValue={(curNote !== null && notes.length > 0) ? curNote["text"] : ""}
-                        value={textInputValue}
-                        disabled={curNote === null}
-                        onChange={(e) => {
-                            setTextInputValue(e.target.value);
-                            updateNote(curNote.id, { text: e.target.value });
-                        }}
-                    />
+                    {isMarkdown ?
+                        <div className="p-4 border-slate-800 border rounded-none rounded-b h-5/6">
+                            <MarkdownViewer content={textInputValue}></MarkdownViewer>
+                        </div>
+                        :
+                        <Textarea
+                            placeholder="Choisissez ou créez une note !"
+                            className={"resize-none rounded-none rounded-b h-5/6" + (curNote === null ? " text-3xl text-center p-4" : "")}
+                            value={textInputValue}
+                            disabled={curNote === null}
+                            onChange={(e) => {
+                                setTextInputValue(e.target.value);
+                                updateNote(curNote.id, { text: e.target.value });
+                            }}
+                        />
+                    }
+
                 </main>
             </div>
 

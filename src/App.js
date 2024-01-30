@@ -1,13 +1,14 @@
 import { BrowserRouter, Link, Route, Routes, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { Toaster } from "@/components/ui/toaster"
 
 import Counter from "./Counter";
 import Names from "./Names";
 import Notes from "./notes/Notes";
 
 function App() {
-    //const [notes, setNotes] = useState(null);
-    //const [curNote, setCurrentNote] = useState(null);
+    const [notes, setNotes] = useState(null);
+    const [curNote, setCurrentNote] = useState(null);
     const [count, setCount] = useState(0);
     const [name, setName] = useState(null);
 
@@ -22,9 +23,10 @@ function App() {
                 <Route path="/" element={<Navigate to="/notes" replace />} /> {/*On redirige la racine sur notes en application par défaut*/}
                 <Route path="/count" element={<Counter count={count} setCount={setCount} />} />
                 <Route path="/names" element={<Names name={name} setName={setName} />} />
-                <Route path="/notes" element={<Notes />} />
-                <Route path="/notes/:id" element={<Notes />} />
+                <Route path="/notes" element={<Notes notes={notes} setNotes={setNotes} curNote={curNote} setCurrentNote={setCurrentNote} />} />
+                <Route path="/notes/:id" element={<Notes notes={notes} setNotes={setNotes} curNote={curNote} setCurrentNote={setCurrentNote} />} />
             </Routes>
+            <Toaster />
         </BrowserRouter>
     );
 }
