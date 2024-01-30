@@ -49,7 +49,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
 
     async function changeNote() {
         if (id && notes) {
-            let note = await notes.find(n => n.id == id);
+            let note = await notes.find(n => n.id === id);
             if (note) {
                 return setCurrentNote(note);
             }
@@ -59,14 +59,6 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
             setTextInputValue("");
             return setCurrentNote(null);
         }
-    }
-
-    async function saveNotes() {
-        await fetch("http://localhost:4000/notes", {
-            method: "POST", headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify(notes)
-        });
     }
 
     useEffect(() => {
@@ -85,6 +77,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
         return await resp.json();
     }
 
+    // TODO: Créer la note en local et l'upload en save
     async function newNote() {
         await fetch("http://localhost:4000/notes", {
             method: "post",
@@ -107,10 +100,6 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
         changeNote();
         // TODO: Focus et selectionner le titre de la nouvelle note
     };
-
-    function updateCurrentNote(e) {
-        console.log(e)
-    }
 
     async function deleteNote(id) {
         await fetch(`http://localhost:4000/notes/${id}`, {
