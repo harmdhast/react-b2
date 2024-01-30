@@ -7,9 +7,11 @@ import Notes from "./Notes";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [name, setName] = useState(null);
+
   return (
     <BrowserRouter>
-      <nav className="bg-slate-900 flex gap-4 p-4 text-white">
+      <nav className=" bg-slate-950 flex gap-4 p-4 text-white">
         <Link to="/count">Compteur</Link>
         <Link to="/names">Générateur de noms</Link>
         <Link to="/notes">Notes</Link>
@@ -17,7 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/notes" replace />} /> {/*On redirige la racine sur notes en application par défaut*/}
         <Route path="/count" element={<Counter count={count} setCount={setCount} />} />
-        <Route path="/names" element={<Names />} />
+        <Route path="/names" element={<Names name={name} setName={setName} />} />
         <Route path="/notes" element={<Notes />} />
       </Routes>
     </BrowserRouter>

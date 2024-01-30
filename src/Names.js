@@ -5,24 +5,22 @@ import { animated, useSpringValue } from '@react-spring/web';
 export function ButtonOutline() {
     return;
 }
-function Names() {
-    const [name, setName] = useState(null);
-
+function Names({ name, setName }) {
     async function fetchName() {
         try {
             const response = await fetch("https://randomuser.me/api/");
             const data = await response.json();
 
-            opacity.reset();
+            opacity.set(0);
             opacity.start(1);
             const name = data.results[0].name;
             setName(name.first + " " + name.last);
-        } catch {
-            console.log("Couldn't fetch name");
+        } catch (e) {
+            console.log(`Couldn't fetch name: ${e}`);
         }
     }
 
-    const opacity = useSpringValue(0);
+    const opacity = useSpringValue(1);
 
     return (
         <div className="flex flex-col bg-slate-900 grow justify-center align-middle items-center text-white gap-1">
