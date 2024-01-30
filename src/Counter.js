@@ -40,8 +40,8 @@ function Counter({ count, setCount }) {
                                 position: "absolute",
                                 left: 0,
                                 right: 0,
-                                "margin-left": "auto",
-                                "margin-right": "auto",
+                                marginLeft: "auto",
+                                marginRight: "auto",
                                 width: "30%",
                                 transform: to([style.position, style.rotation], (p, s) => `translateY(${p}) rotateX(${s})`),
                                 opacity: style.opacity
