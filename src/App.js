@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import Counter from "./Counter";
 import Names from "./Names";
-import Notes from "./Notes";
+import Notes from "./notes/Notes";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -21,6 +21,7 @@ function App() {
         <Route path="/count" element={<Counter count={count} setCount={setCount} />} />
         <Route path="/names" element={<Names name={name} setName={setName} />} />
         <Route path="/notes" element={<Notes />} />
+        <Route path="/notes/:id" element={<Notes />} />
       </Routes>
     </BrowserRouter>
   );
