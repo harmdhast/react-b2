@@ -22,12 +22,15 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { MarkdownViewer } from "./MarkdownViewer";
+import { useDebouncedEffect } from "./useDebouncedEffect";
 function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const [nameInputValue, setNameInputValue] = useState("");
     const [textInputValue, setTextInputValue] = useState("");
     const [isMarkdown, setMarkdown] = useState(false);
     const [isLoading, setLoading] = useState(true);
-    const { toast } = useToast()
+    const [needSave, setNeedSave] = useState(0);
+    const [prevNote, setPrevNote] = useState(null);
+    const { toast } = useToast();
 
     let navigate = useNavigate();
 
@@ -135,7 +138,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                 variant: "success"
             })
         });
-        setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
+        //setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
         //fetchNotes();
     }
 
@@ -181,6 +184,11 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
         setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
     }
 
+    useDebouncedEffect(() => {
+        if (curNote) { saveNote(curNote.id) }
+
+    }, [needSave], 1000)
+
     // Update the name and text properties of a specific note
     const updateNote = (noteId, newProperties) => {
         setNotes((prevNotes) => {
@@ -190,11 +198,14 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                     setCurrentNote({
                         ...note,
                         ...newProperties,
+                        changed: true
                     });
 
                     // Update the input values states as well
                     setNameInputValue(newProperties.name);
                     setTextInputValue(newProperties.text);
+
+                    setNeedSave(needSave + 1);
 
                     return {
                         ...note,
@@ -207,10 +218,14 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     };
 
     useEffect(() => {
+        if (prevNote && curNote !== null && prevNote.id !== curNote.id && prevNote["changed"]) {
+            saveNote(prevNote.id);
+        }
         // Check if curNote is not null before updating the input value
         if (curNote !== null) {
             setNameInputValue(curNote.name);
             setTextInputValue(curNote.text);
+            setPrevNote(curNote);
         }
     }, [curNote]);
 
@@ -285,7 +300,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                             disabled={curNote === null}
                             //onChange={(e) => updateNoteName(curNote.id, e.target.value)}
                             onChange={(e) => {
-                                setNameInputValue(e.target.value);
+                                //setNameInputValue(e.target.value);
                                 updateNote(curNote.id, { name: e.target.value });
                             }}
                         />
@@ -312,7 +327,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                             value={textInputValue}
                             disabled={curNote === null}
                             onChange={(e) => {
-                                setTextInputValue(e.target.value);
+                                //setTextInputValue(e.target.value);
                                 updateNote(curNote.id, { text: e.target.value });
                             }}
                         />

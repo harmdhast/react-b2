@@ -1,6 +1,7 @@
 import { BrowserRouter, Link, Route, Routes, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster"
+import { UserProfile } from "./UserProfile";
 
 import Counter from "./Counter";
 import Names from "./Names";
@@ -11,13 +12,18 @@ function App() {
     const [curNote, setCurrentNote] = useState(null);
     const [count, setCount] = useState(0);
     const [name, setName] = useState(null);
+    const [user, setUser] = useState(null);
 
     return (
         <BrowserRouter>
-            <nav className=" bg-slate-950 flex gap-4 p-4 text-white">
+            <nav className=" bg-slate-950 flex gap-4 p-4 text-white items-center">
                 <Link to="/count">Compteur</Link>
                 <Link to="/names">Générateur de noms</Link>
                 <Link to="/notes">Notes</Link>
+                <div className="ml-auto">
+                    <UserProfile user={user} setUser={setUser}></UserProfile>
+                </div>
+
             </nav>
             <Routes>
                 <Route path="/" element={<Navigate to="/notes" replace />} /> {/*On redirige la racine sur notes en application par défaut*/}
