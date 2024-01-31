@@ -42,9 +42,9 @@ function Names({ name, setName }) {
     }
 
     return (
-        <div className="flex flex-col bg-slate-900 grow justify-center align-middle items-center text-white gap-1">
-            <animated.div className="text-xl h-5 mb-2" style={{ opacity }}>{name}</animated.div>
-            <Button onClick={setNewName} variant="outline" className="text text-xl" size="lg">Changer nom</Button>
+        <div className="flex flex-col bg-zinc-100 dark:bg-zinc-900 dark:text-white text-zinc-800 grow justify-center align-middle items-center gap-1">
+            <animated.div className="text-3xl mb-2" style={{ opacity }}>{name}</animated.div>
+            <Button onClick={setNewName} variant="outline" className="text text-xl" size="lg">Nom aléatoire</Button>
         </div>
     );
 }

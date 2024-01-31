@@ -1,8 +1,10 @@
-import { animated, to, useSpring, useSpringRef, useTransition } from '@react-spring/web';
-import { useState, useContext, useRef, useEffect } from "react";
-
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+
+import { animated, to, useSpring, useSpringRef, useTransition } from '@react-spring/web';
+import { useContext, useEffect, useState } from "react";
+import { zinc } from 'tailwindcss/colors';
+
 import { UserContext } from './App';
 
 function Counter({ count, setCount }) {
@@ -34,7 +36,7 @@ function Counter({ count, setCount }) {
     }
 
     useEffect(() => {
-        setBaseColor(isDarkMode ? "white" : "#18181b")
+        setBaseColor(isDarkMode ? "white" : zinc["800"])
     }, [isDarkMode])
 
     // Animation compteur
@@ -46,7 +48,7 @@ function Counter({ count, setCount }) {
     })
 
     return (
-        <div className="flex flex-row bg-zinc-100 dark:bg-zinc-900 grow justify-center align-middle items-center dark:text-white text-zinc-900 gap-36">
+        <div className="flex flex-row bg-zinc-100 dark:bg-zinc-900 dark:text-white text-zinc-800 grow justify-center align-middle items-center gap-36">
 
             <Button className="h-24 w-24" variant="ghost" size="icon" onClick={function () { updateCounter(-1) }}>
                 <MinusIcon className="h-16 w-16" />
