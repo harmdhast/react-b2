@@ -1,11 +1,14 @@
 import { animated, to, useSpring, useSpringRef, useTransition } from '@react-spring/web';
-import react from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { UserContext } from './App';
 
 function Counter({ count, setCount }) {
-    const [animDirection, setAnimDirection] = react.useState(true); // Direction de l'animation du compteur
+    const { isDarkMode, toggleDarkMode } = useContext(UserContext);
+    const [animDirection, setAnimDirection] = useState(true); // Direction de l'animation du compteur
+    const [baseColor, setBaseColor] = useState("white");
 
     function updateCounter(val) {
         if (count + val < 0) {
@@ -30,6 +33,10 @@ function Counter({ count, setCount }) {
         errorColorApi.start({ color: 1 });
     }
 
+    useEffect(() => {
+        setBaseColor(isDarkMode ? "white" : "#18181b")
+    }, [isDarkMode])
+
     // Animation compteur
     const transitions = useTransition([count], {
         from: { position: animDirection ? '100%' : '-100%', opacity: 0, rotation: '90deg' },
@@ -53,7 +60,7 @@ function Counter({ count, setCount }) {
                             style={{
                                 color: errorColor.to({ /* Map animation erreur */
                                     range: [0, 0.25, 0.5, 0.75, 1],
-                                    output: ["white", "red", "white", "red", "white"]
+                                    output: [baseColor, "red", baseColor, "red", baseColor]
                                 }),
                                 position: "absolute",
                                 left: 0,
