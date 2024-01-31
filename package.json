@@ -37,7 +37,7 @@
     "test": "craco test",
     "eject": "craco eject",
     "tailwind": "npx tailwindcss -i ./src/globals.css -o ./public/output.css --watch",
-    "jsonserver": "npx json-server db.json --port 4000"
+    "jsonserver": "npx json-server --watch db.json --port 4000"
   },
   "eslintConfig": {
     "extends": [

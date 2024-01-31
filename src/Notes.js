@@ -49,7 +49,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
 
     async function changeNote() {
         if (id && notes) {
-            let note = await notes.find(n => n.id === id);
+            let note = await notes.find(n => n.id === Number(id));
             if (note) {
                 return setCurrentNote(note);
             }
