@@ -1,6 +1,6 @@
-import { BrowserRouter, Link, Route, Routes, Navigate } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import { useState } from "react";
-import { Toaster } from "@/components/ui/toaster"
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import { UserProfile } from "./UserProfile";
 
 import Counter from "./Counter";
