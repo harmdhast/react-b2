@@ -39,7 +39,7 @@ function Counter({ count, setCount }) {
     })
 
     return (
-        <div className="flex flex-row bg-slate-900 grow justify-center align-middle items-center text-white gap-36">
+        <div className="flex flex-row bg-zinc-100 dark:bg-zinc-900 grow justify-center align-middle items-center dark:text-white text-zinc-900 gap-36">
 
             <Button className="h-24 w-24" variant="ghost" size="icon" onClick={function () { updateCounter(-1) }}>
                 <MinusIcon className="h-16 w-16" />

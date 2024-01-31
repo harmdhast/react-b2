@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SunIcon, MoonIcon } from '@radix-ui/react-icons'
 import { Switch } from "@/components/ui/switch";
+import { UserContext } from '@/App';
 
 function DarkModeSwitch() {
-    const [isDarkMode, toggleDarkMode] = useState(null);
+    const { isDarkMode, toggleDarkMode } = useContext(UserContext);
 
     useEffect(() => {
         if (isDarkMode === null) {
