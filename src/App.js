@@ -1,11 +1,11 @@
+import { DarkModeSwitch } from "@/components/misc/darkMode";
 import { Toaster } from "@/components/ui/toaster";
 import { useState } from "react";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
-import { UserProfile } from "./UserProfile";
-
 import Counter from "./Counter";
 import Names from "./Names";
 import Notes from "./Notes";
+import { UserProfile } from "./UserProfile";
 
 function App() {
     const [notes, setNotes] = useState(null);
@@ -22,6 +22,7 @@ function App() {
                 <Link to="/notes">Notes</Link>
                 <div className="ml-auto">
                     <UserProfile user={user} setUser={setUser}></UserProfile>
+                    <DarkModeSwitch></DarkModeSwitch>
                 </div>
 
             </nav>
