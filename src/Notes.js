@@ -1,28 +1,19 @@
-import { useEffect, useState } from "react";
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "./components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Loader } from "@/components/ui/loader";
-import { useToast } from "@/components/ui/use-toast"
-import { PlusCircledIcon, TrashIcon, StarFilledIcon, StarIcon, ReaderIcon } from "@radix-ui/react-icons";
-import { Input } from "@/components/ui/input"
-import { useParams, Link, useNavigate } from "react-router-dom";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { MarkdownViewer } from "@/components/notes/MarkdownViewer";
+import * as alertDialog from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader } from "@/components/ui/loader";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { PlusCircledIcon, ReaderIcon, StarFilledIcon, StarIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
+import { Button } from "./components/ui/button";
+
 function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const [nameInputValue, setNameInputValue] = useState("");
     const [textInputValue, setTextInputValue] = useState("");
@@ -102,7 +93,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     };
 
     async function deleteNote(id) {
-        await fetch(`http://localhost:4000/notes/${id}`, {
+        fetch(`http://localhost:4000/notes/${id}`, {
             method: "DELETE"
         });
         setNotesWrapper(notes.filter(n => n.id !== id));
@@ -220,7 +211,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     }, [curNote]);
 
     return (
-        <div className="bg-slate-900 h-full text-white gap-1 pt-4">
+        <div className="bg-zinc-100 dark:bg-zinc-900  h-full dark:text-white text-zinc-900 gap-1 pt-4">
 
             <div className="container h-full flex flex-row grow gap-4">
                 <aside className="w-2/6">
@@ -239,21 +230,21 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                                         <div className="h-full flex flex-row gap-2 justify-center items-center">
 
                                             <Button variant="outline" size="icon" asChild>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></AlertDialogTrigger>
-                                                    <AlertDialogContent className="dark:bg-slate-900">
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle className="text-red-600">Supprimer la note ?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
+                                                <alertDialog.AlertDialog>
+                                                    <alertDialog.AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></alertDialog.AlertDialogTrigger>
+                                                    <alertDialog.AlertDialogContent className="dark:bg-slate-900">
+                                                        <alertDialog.AlertDialogHeader>
+                                                            <alertDialog.AlertDialogTitle className="text-red-600">Supprimer la note ?</alertDialog.AlertDialogTitle>
+                                                            <alertDialog.AlertDialogDescription>
                                                                 Voulez-vous envoyer la note à jamais avec papa Johnny ?
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel className="dark:bg-white">Annuler</AlertDialogCancel>
-                                                            <AlertDialogAction className="dark:bg-red-600 dark:text-white dark:hover:bg-red-800" onClick={() => { deleteNote(note["id"]) }}>Supprimer</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
+                                                            </alertDialog.AlertDialogDescription>
+                                                        </alertDialog.AlertDialogHeader>
+                                                        <alertDialog.AlertDialogFooter>
+                                                            <alertDialog.AlertDialogCancel className="dark:bg-white">Annuler</alertDialog.AlertDialogCancel>
+                                                            <alertDialog.AlertDialogAction className="dark:bg-red-600 dark:text-white dark:hover:bg-red-800" onClick={() => { deleteNote(note["id"]) }}>Supprimer</alertDialog.AlertDialogAction>
+                                                        </alertDialog.AlertDialogFooter>
+                                                    </alertDialog.AlertDialogContent>
+                                                </alertDialog.AlertDialog>
 
 
                                             </Button>

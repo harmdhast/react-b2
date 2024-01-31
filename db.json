@@ -1,0 +1,29 @@
+{
+  "profiles": [
+    {
+      "username": "Defaut",
+      "avatar": "https://github.com/ghost.png",
+      "id": 1
+    }
+  ],
+  "notes": [
+    {
+      "name": "Nouvelle note",
+      "text": "Ma super nouvelle note !",
+      "created": 1706711899747,
+      "updated": 1706711902128,
+      "starred": false,
+      "checked": false,
+      "id": 2
+    },
+    {
+      "name": "Nouvelle note",
+      "text": "Ma super nouvelle note !",
+      "created": 1706711899747,
+      "updated": 1706711919844,
+      "starred": false,
+      "checked": false,
+      "id": 3
+    }
+  ]
+}

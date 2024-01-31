@@ -1,11 +1,14 @@
 import { DarkModeSwitch } from "@/components/misc/darkMode";
 import { Toaster } from "@/components/ui/toaster";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import Counter from "./Counter";
 import Names from "./Names";
 import Notes from "./Notes";
-import { UserProfile } from "./UserProfile";
+import { NavMenu } from "./NavMenu";
+
+import { getDefaultUser, getUsers } from "./components/profile/user";
+import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
 
 export const UserContext = createContext(null);
 
@@ -14,21 +17,21 @@ function App() {
     const [curNote, setCurrentNote] = useState(null);
     const [count, setCount] = useState(0);
     const [name, setName] = useState(null);
-    const [user, setUser] = useState(null);
+    const [profile, setProfile] = useState(null);
     const [isDarkMode, toggleDarkMode] = useState(null);
 
+    useDebouncedEffect(() => {
+        setProfile(getDefaultUser());
+    })
+
     return (
-        <UserContext.Provider value={{ isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode }}>
+        <UserContext.Provider value={{ isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode, profile: profile, setProfile: setProfile }}>
             <BrowserRouter>
-                <nav className=" bg-sky-400 dark:bg-zinc-950 flex gap-4 p-4 text-white items-center shadow shadow-zinc-200 dark:shadow-none drop-shadow-sm">
-                    <Link to="/count">Compteur</Link>
-                    <Link to="/names">Générateur de noms</Link>
-                    <Link to="/notes">Notes</Link>
+                <nav className=" bg-sky-400 dark:bg-zinc-950 flex gap-4 p-4 text-white items-center shadow shadow-zinc-200 dark:shadow-none drop-shadow-sm z-50">
+                    <NavMenu></NavMenu>
                     <div className="ml-auto">
-                        <UserProfile user={user} setUser={setUser}></UserProfile>
                         <DarkModeSwitch></DarkModeSwitch>
                     </div>
-
                 </nav>
                 <Routes>
                     <Route path="/" element={<Navigate to="/notes" replace />} /> {/*On redirige la racine sur notes en application par défaut*/}
