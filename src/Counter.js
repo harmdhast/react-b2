@@ -1,42 +1,47 @@
-import { useState } from "react";
-import { PlusIcon, MinusIcon } from "@radix-ui/react-icons"
-import { useTransition, animated, to, useSpring, useSpringRef } from '@react-spring/web'
+import { animated, to, useSpring, useSpringRef, useTransition } from '@react-spring/web';
+import react from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
 
 function Counter({ count, setCount }) {
-    const [forward, setForward] = useState(true);
+    const [animDirection, setAnimDirection] = react.useState(true); // Direction de l'animation du compteur
 
-    function changeCount(val) {
+    function updateCounter(val) {
         if (count + val < 0) {
-            api.set({ color: 0 });
-            api.start({ color: 1 });
-            return;
+            return playErrorAnim();
         }
-        setForward(val < 0);
+        setAnimDirection(val < 0);
         setCount(count + val);
     }
 
-    const api = useSpringRef();
+    // Animation erreur (compteur < 0)
+    const errorColorApi = useSpringRef();
     const { color: errorColor } = useSpring({
-        ref: api,
+        ref: errorColorApi,
         from: { color: 0 },
         color: 0,
         config: { duration: 400 },
         reset: true
     });
 
+    function playErrorAnim() {
+        errorColorApi.set({ color: 0 });
+        errorColorApi.start({ color: 1 });
+    }
+
+    // Animation compteur
     const transitions = useTransition([count], {
-        from: { position: forward ? '100%' : '-100%', opacity: 0, rotation: '90deg' },
+        from: { position: animDirection ? '100%' : '-100%', opacity: 0, rotation: '90deg' },
         enter: { position: '0%', opacity: 1, rotation: '0deg' },
-        leave: { position: forward ? '-100%' : '100%', opacity: 0, rotation: '90deg' },
+        leave: { position: animDirection ? '-100%' : '100%', opacity: 0, rotation: '90deg' },
         initial: null
     })
 
     return (
         <div className="flex flex-row bg-slate-900 grow justify-center align-middle items-center text-white gap-36">
 
-            <Button className="h-24 w-24" variant="ghost" size="icon" onClick={function () { changeCount(-1) }}>
+            <Button className="h-24 w-24" variant="ghost" size="icon" onClick={function () { updateCounter(-1) }}>
                 <MinusIcon className="h-16 w-16" />
             </Button>
 
@@ -46,7 +51,7 @@ function Counter({ count, setCount }) {
                         <animated.div
                             className="text-9xl tabular-nums text-center"
                             style={{
-                                color: errorColor.to({
+                                color: errorColor.to({ /* Map animation erreur */
                                     range: [0, 0.25, 0.5, 0.75, 1],
                                     output: ["white", "red", "white", "red", "white"]
                                 }),
@@ -65,7 +70,7 @@ function Counter({ count, setCount }) {
                 }
             </div>
 
-            <Button className="h-24 w-24" variant="ghost" size="icon" onClick={function () { changeCount(1) }}>
+            <Button className="h-24 w-24" variant="ghost" size="icon" onClick={function () { updateCounter(1) }}>
                 <PlusIcon className="h-16 w-16" />
             </Button>
         </div >
