@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "./components/ui/button"
 import { UserContext } from "./App"
+import { CreateUserDialog } from "./components/profile/create_user"
 
 const components = [
     {
@@ -70,7 +71,7 @@ export function NavMenu() {
                 < NavigationMenu >
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger className="text-lg bg-sky-400">
+                            <NavigationMenuTrigger className="text-lg bg-sky-400 hover:bg-sky-600">
                                 <Avatar className="w-7 h-7 mr-2">
                                     <AvatarImage src="https://github.com/ghost.png" />
                                 </Avatar>
@@ -90,14 +91,19 @@ export function NavMenu() {
                                         </a>
                                     </NavigationMenuLink>
                                     <div className="flex flex-col gap-2 justify-center items-center">
-                                        <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-cyan-500">
-                                            <PersonIcon className="w-7 h-7 mr-2 group-hover:text-cyan-500"></PersonIcon> Changer d'utilisateur
-                                        </Button>
-                                        <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-green-500">
-                                            <PlusIcon className="w-7 h-7 mr-2 group-hover:text-green-500"></PlusIcon> Nouvel utilisateur
-                                        </Button>
+                                        <CreateUserDialog>
+                                            <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-green-500">
+                                                <PlusIcon className="w-7 h-7 mr-2 group-hover:text-green-500"></PlusIcon> Nouvel utilisateur
+                                            </Button>
+
+                                        </CreateUserDialog>
+
+
                                         <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-red-500">
                                             <TrashIcon className="w-7 h-7 mr-2 group-hover:text-red-500"></TrashIcon> Supprimer l'utilisateur
+                                        </Button>
+                                        <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-cyan-500">
+                                            <PersonIcon className="w-7 h-7 mr-2 group-hover:text-cyan-500"></PersonIcon> Changer d'utilisateur
                                         </Button>
                                     </div>
 
@@ -106,21 +112,21 @@ export function NavMenu() {
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <Link to="/count">
-                                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-lg bg-sky-400 hover:text-white hover:bg-sky-600"} >
+                                <NavigationMenuLink className={"group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 font-medium transition-colors text-lg bg-sky-400 hover:bg-sky-600 dark:bg-zinc-950 hover:dark:bg-zinc-800"} >
                                     Compteur
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <Link to="/names">
-                                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-lg bg-sky-400"}>
+                                <NavigationMenuLink className={"group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 font-medium transition-colors text-lg bg-sky-400 hover:bg-sky-600 dark:bg-zinc-950 hover:dark:bg-zinc-800"}>
                                     Générateur de noms
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <Link to="/notes">
-                                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-lg bg-sky-400"}>
+                                <NavigationMenuLink className={"group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 font-medium transition-colors text-lg bg-sky-400 hover:bg-sky-600 dark:bg-zinc-950 hover:dark:bg-zinc-800"}>
                                     Notes
                                 </NavigationMenuLink>
                             </Link>
@@ -128,7 +134,8 @@ export function NavMenu() {
                     </NavigationMenuList>
                 </NavigationMenu >
                 :
-                ""}
-        </div>
+                ""
+            }
+        </div >
     )
 }

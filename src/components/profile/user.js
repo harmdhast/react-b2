@@ -1,6 +1,15 @@
+const API_HOST = "http://localhost:4000";
+
+async function fetchData(url, options = {}) {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return await response.json();
+}
+
 async function getUsers() {
-    const response = await fetch("http://localhost:4000/profiles");
-    const data = await response.json();
+    const data = await fetchData(`${API_HOST}/profiles`);
 
     if (data.length === 0) {
         return null;
@@ -9,8 +18,7 @@ async function getUsers() {
 }
 
 async function getUser(id) {
-    const response = await fetch(`http://localhost:4000/profiles?id=${id}`);
-    const data = await response.json();
+    const data = await fetchData(`${API_HOST}/profiles?id=${id}`);
 
     if (data.length === 0) {
         return null;
@@ -19,7 +27,7 @@ async function getUser(id) {
 }
 
 async function updateUser(id, props) {
-    await fetch(`http://localhost:4000/profiles?id=${id}`, {
+    await fetchData(`${API_HOST}/profiles?id=${id}`, {
         method: "put",
         headers: {
             'Content-Type': 'application/json',
@@ -29,29 +37,10 @@ async function updateUser(id, props) {
 }
 
 async function getDefaultUser() {
-    const response = await fetch("http://localhost:4000/profiles?_order=desc&_limit=1");
-    const data = await response.json();
-
-    if (data.length === 0) {
-        await createDefaultProfile();
-        return await getDefaultUser();
+    return {
+        "username": "Default",
+        "avatar": "https://github.com/ghost.png",
     }
-
-    return data[0];
 }
 
-async function createDefaultProfile() {
-    await fetch("http://localhost:4000/profiles", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            "username": "Defaut",
-            "avatar": "https://github.com/ghost.png",
-        })
-    });
-}
-
-
-export { getUsers, getUser, getDefaultUser, updateUser }
+export { getUsers, getUser, getDefaultUser, updateUser };

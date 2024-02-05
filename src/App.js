@@ -7,7 +7,7 @@ import Names from "./Names";
 import Notes from "./Notes";
 import { NavMenu } from "./NavMenu";
 
-import { getDefaultUser, getUsers } from "./components/profile/user";
+import { getUsers } from "./components/profile/user";
 import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
 
 export const UserContext = createContext(null);
@@ -19,10 +19,6 @@ function App() {
     const [name, setName] = useState(null);
     const [profile, setProfile] = useState(null);
     const [isDarkMode, toggleDarkMode] = useState(null);
-
-    useDebouncedEffect(() => {
-        setProfile(getDefaultUser());
-    })
 
     return (
         <UserContext.Provider value={{ isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode, profile: profile, setProfile: setProfile }}>

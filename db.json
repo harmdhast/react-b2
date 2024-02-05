@@ -24,6 +24,15 @@
       "starred": false,
       "checked": false,
       "id": 3
+    },
+    {
+      "name": "Nouvelle note",
+      "text": "Ma super nouvelle note !",
+      "created": 1707149737383,
+      "updated": 1707149737383,
+      "starred": false,
+      "checked": false,
+      "id": 4
     }
   ]
 }
