@@ -232,7 +232,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                                             <Button variant="outline" size="icon" asChild>
                                                 <alertDialog.AlertDialog>
                                                     <alertDialog.AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></alertDialog.AlertDialogTrigger>
-                                                    <alertDialog.AlertDialogContent className="dark:bg-slate-900">
+                                                    <alertDialog.AlertDialogContent className="dark:bg-zinc-900">
                                                         <alertDialog.AlertDialogHeader>
                                                             <alertDialog.AlertDialogTitle className="text-red-600">Supprimer la note ?</alertDialog.AlertDialogTitle>
                                                             <alertDialog.AlertDialogDescription>

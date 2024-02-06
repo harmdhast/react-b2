@@ -9,22 +9,33 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import React, { useEffect, useState, useContext } from 'react';
-import { createUser, getUserByName } from "./user";
+import { deleteUser, getDefaultUser, getUserByName, getUsers } from "./user";
 import { Loader } from "../ui/loader";
 import { UserContext } from "@/App";
-export function CreateUserDialog({ children, setDialogOpen, closeNav }) {
+
+export function DelUserDialog({ children, setDialogOpen, closeNav }) {
     const { profile, setProfile } = useContext(UserContext);
     const [inputName, setInputName] = useState("");
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [users, setUsers] = useState([]);
 
-    const handleInputChange = (e) => {
-        resetError();
-        setInputName(e.target.value);
+    useEffect(() => {
+        getUsers().then((u) => setUsers(u || []));
+    }, [inputName])
+
+    const handleValueChange = (e) => {
+        setInputName(e);
     };
 
     const handleAccept = async () => {
@@ -33,20 +44,23 @@ export function CreateUserDialog({ children, setDialogOpen, closeNav }) {
         const name = inputName.trim();
 
         if (name === "") {
-            displayError("Votre nom d'utilisateur ne peut pas être vide.");
+            displayError("Vous devez choisir un utilisateur.");
             setLoading(false);
             return;
         }
 
-        if (await getUserByName(name) !== null) {
-            displayError("Ce nom d'utilisateur existe déjà.");
+        const user = await getUserByName(name);
+
+        if (user === null) {
+            displayError("Cet utilisateur n'existe pas.");
+            setInputName("");
             setLoading(false);
             return;
         };
 
-        await createUser(name)
+        await deleteUser(user.id)
         resetError();
-        setProfile(await getUserByName(name));
+        if (user.id === profile.id) setProfile(getDefaultUser());
         setLoading(false);
         closeNav();
     };
@@ -69,7 +83,7 @@ export function CreateUserDialog({ children, setDialogOpen, closeNav }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="dark:text-white">Nouvel utilisateur</DialogTitle>
+                    <DialogTitle className="dark:text-white">Supprimer un utilisateur</DialogTitle>
 
                 </DialogHeader>
                 <div className="flex flex-col">
@@ -78,15 +92,16 @@ export function CreateUserDialog({ children, setDialogOpen, closeNav }) {
                         <Label htmlFor="username" className="text-right dark:text-white w-1/6">
                             Nom
                         </Label>
-                        <Input
-                            id="username"
-                            placeholder="John Doe"
-                            className={"col-span-3 dark:text-white " + (isError ? "border dark:border-red-500 border-transparent dark:text-red-500" : "")}
-                            value={inputName}
-                            onChange={handleInputChange}
-                            autoComplete="off"
-                            disabled={loading}
-                        />
+                        <Select className="col-span-3 dark:text-white" onValueChange={handleValueChange}>
+                            <SelectTrigger className="col-span-3 dark:text-white">
+                                <SelectValue className="col-span-3 dark:text-white" />
+                            </SelectTrigger>
+                            <SelectContent >
+                                {users.map((x) =>
+                                    <SelectItem value={x.username}>{x.username}</SelectItem>
+                                )}
+                            </SelectContent>
+                        </Select>
                         {loading ? <Loader>
                         </Loader> : ""}
                     </div>
@@ -95,7 +110,7 @@ export function CreateUserDialog({ children, setDialogOpen, closeNav }) {
                     </span>
                 </div>
                 <DialogFooter>
-                    <Button onClick={handleAccept} disabled={loading}>Ajouter</Button>
+                    <Button onClick={handleAccept} disabled={loading} variant="destructive">Supprimer</Button>
                     <DialogClose asChild>
                         <Button type="button" variant="secondary" disabled={loading}>
                             Annuler

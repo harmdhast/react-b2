@@ -1,4 +1,5 @@
 const API_HOST = "http://localhost:4000";
+const DEFAULT_AVATAR = "https://github.com/ghost.png";
 
 async function fetchData(url, options = {}) {
     const response = await fetch(url, options);
@@ -26,6 +27,13 @@ async function getUser(id) {
     return data[0];
 }
 
+async function getUserByName(username) {
+    const data = await fetchData(`${API_HOST}/profiles?username=${username}`);
+
+    if (data.length === 0) return null;
+    return data[0];
+}
+
 async function updateUser(id, props) {
     await fetchData(`${API_HOST}/profiles?id=${id}`, {
         method: "put",
@@ -36,11 +44,49 @@ async function updateUser(id, props) {
     });
 }
 
-async function getDefaultUser() {
+async function getGithubAvatar(username) {
+    const resp = await fetch(`https://api.github.com/users/${username}`);
+
+    if (resp.status !== 200) return DEFAULT_AVATAR;
+    const body = await resp.json();
+
+    if (body["avatar_url"] !== null) return body["avatar_url"];
+
+    return DEFAULT_AVATAR;
+}
+
+async function createUser(username) {
+    const profile = {
+        "username": username,
+        "avatar": await getGithubAvatar(username),
+    }
+
+    await fetchData(`${API_HOST}/profiles`, {
+        method: "post",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profile)
+    });
+
+    return profile;
+}
+
+async function deleteUser(id) {
+    await fetchData(`${API_HOST}/profiles/${id}`, {
+        method: "delete",
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+}
+
+function getDefaultUser() {
     return {
         "username": "Default",
-        "avatar": "https://github.com/ghost.png",
+        "avatar": DEFAULT_AVATAR,
+        "id": 0
     }
 }
 
-export { getUsers, getUser, getDefaultUser, updateUser };
+export { getUsers, getUser, getDefaultUser, updateUser, getUserByName, createUser, deleteUser };

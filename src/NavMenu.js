@@ -17,6 +17,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "./components/ui/button"
 import { UserContext } from "./App"
 import { CreateUserDialog } from "./components/profile/create_user"
+import { DelUserDialog } from "./components/profile/del_user"
+import { ChangeUserDialog } from "./components/profile/change_user"
 
 const components = [
     {
@@ -57,54 +59,56 @@ const components = [
 ]
 
 export function NavMenu() {
-    const { profile } = useContext(UserContext);
-    const [username, setUsername] = useState(null);
+    const { profile, setProfile } = useContext(UserContext);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [navValue, setNavValue] = useState("");
 
-    useEffect(() => {
-        console.log(profile)
-        if (profile) setUsername(profile.username)
-    }, [profile])
+    function closeNav() {
+        setNavValue("");
+    }
 
     return (
         <div>
             {true ?
-                < NavigationMenu >
+                < NavigationMenu onValueChange={(e) => setNavValue(e)} value={navValue}>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger className="text-lg bg-sky-400 hover:bg-sky-600">
+                            <NavigationMenuTrigger className="text-lg bg-sky-400 hover:bg-sky-600 font-light">
                                 <Avatar className="w-7 h-7 mr-2">
-                                    <AvatarImage src="https://github.com/ghost.png" />
+                                    <AvatarImage src={profile.avatar} />
                                 </Avatar>
-                                {username}
+                                {profile.username}
                             </NavigationMenuTrigger>
-                            <NavigationMenuContent className="">
-                                <div className="flex gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                            <NavigationMenuContent onPointerLeave={(e) => { if (dialogOpen) e.preventDefault() }}>
+                                <div className="flex gap-3 p-4 md:w-[400px] lg:w-[500px]">
                                     <NavigationMenuLink asChild>
                                         <a
                                             className="flex h-full w-32 select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md dark:hover:bg-zinc-800 hover:bg-zinc-200"
-                                            href="/"
                                         >
-                                            <img className="rounded-full" src="https://github.com/ghost.png"></img>
-                                            <div className="mb-2 mt-4 text-lg font-medium text-center">
-                                                {username}
+                                            <img className="rounded-full" src={profile.avatar}></img>
+                                            <div className="mb-2 mt-4 text-base text-center font-light text-ellipsis overflow-hidden">
+                                                {profile.username}
                                             </div>
                                         </a>
                                     </NavigationMenuLink>
                                     <div className="flex flex-col gap-2 justify-center items-center">
-                                        <CreateUserDialog>
+                                        <CreateUserDialog setDialogOpen={setDialogOpen} closeNav={closeNav}>
                                             <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-green-500">
                                                 <PlusIcon className="w-7 h-7 mr-2 group-hover:text-green-500"></PlusIcon> Nouvel utilisateur
                                             </Button>
-
                                         </CreateUserDialog>
 
+                                        <DelUserDialog setDialogOpen={setDialogOpen} closeNav={closeNav}>
+                                            <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-red-500">
+                                                <TrashIcon className="w-7 h-7 mr-2 group-hover:text-red-500"></TrashIcon> Supprimer l'utilisateur
+                                            </Button>
+                                        </DelUserDialog>
 
-                                        <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-red-500">
-                                            <TrashIcon className="w-7 h-7 mr-2 group-hover:text-red-500"></TrashIcon> Supprimer l'utilisateur
-                                        </Button>
-                                        <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-cyan-500">
-                                            <PersonIcon className="w-7 h-7 mr-2 group-hover:text-cyan-500"></PersonIcon> Changer d'utilisateur
-                                        </Button>
+                                        <ChangeUserDialog setDialogOpen={setDialogOpen} closeNav={closeNav}>
+                                            <Button variant="ghost" className="group text-xl flex w-full justify-start hover:border hover:border-cyan-500">
+                                                <PersonIcon className="w-7 h-7 mr-2 group-hover:text-cyan-500"></PersonIcon> Changer d'utilisateur
+                                            </Button>
+                                        </ChangeUserDialog>
                                     </div>
 
                                 </div>

@@ -7,7 +7,7 @@ import Names from "./Names";
 import Notes from "./Notes";
 import { NavMenu } from "./NavMenu";
 
-import { getUsers } from "./components/profile/user";
+import { getDefaultUser, getUsers } from "./components/profile/user";
 import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
 
 export const UserContext = createContext(null);
@@ -17,7 +17,7 @@ function App() {
     const [curNote, setCurrentNote] = useState(null);
     const [count, setCount] = useState(0);
     const [name, setName] = useState(null);
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState(getDefaultUser());
     const [isDarkMode, toggleDarkMode] = useState(null);
 
     return (
