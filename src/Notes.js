@@ -1,4 +1,4 @@
-import { MarkdownViewer } from "@/components/notes/MarkdownViewer";
+import { MarkdownViewer } from "@/components/notes/markdown_viewer";
 import * as alertDialog from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -219,10 +219,10 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                         <PlusCircledIcon className="mr-2 w-5 h-5" />Nouvelle note
                     </Button>
                     {isLoading ? <Loader className="h-5/6"></Loader> :
-                        <ScrollArea className=" h-5/6 rounded-none rounded-b border border-slate-800 border-t-0">
+                        <ScrollArea className=" h-5/6 rounded-none rounded-b border border-zinc-800 border-t-0">
                             {
                                 notes.map((note) =>
-                                    <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 border-b rounded-none " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
+                                    <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 border-b rounded-none " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
                                         <div className="m-1 flex flex-col text-left">
                                             <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
                                             <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
@@ -298,7 +298,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                         </div>
                     </div>
                     {isMarkdown ?
-                        <div className="p-4 border-slate-800 border rounded-none rounded-b h-5/6">
+                        <div className="p-4 border-zinc-800 border rounded-none rounded-b h-5/6">
                             <MarkdownViewer content={textInputValue}></MarkdownViewer>
                         </div>
                         :

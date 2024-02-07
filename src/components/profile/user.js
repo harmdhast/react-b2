@@ -89,4 +89,10 @@ function getDefaultUser() {
     }
 }
 
-export { getUsers, getUser, getDefaultUser, updateUser, getUserByName, createUser, deleteUser };
+async function fetchLastProfile() {
+    const id = Number(localStorage.getItem("profile"))
+    if (isNaN(id) || id < 1) return getDefaultUser();
+    return await getUser(id);
+}
+
+export { getUsers, getUser, getDefaultUser, updateUser, getUserByName, createUser, deleteUser, DEFAULT_AVATAR, fetchLastProfile };

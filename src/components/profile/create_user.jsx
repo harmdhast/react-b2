@@ -15,6 +15,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { createUser, getUserByName } from "./user";
 import { Loader } from "../ui/loader";
 import { UserContext } from "@/App";
+
 export function CreateUserDialog({ children, setDialogOpen, closeNav }) {
     const { profile, setProfile } = useContext(UserContext);
     const [inputName, setInputName] = useState("");

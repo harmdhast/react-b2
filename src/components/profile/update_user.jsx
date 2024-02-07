@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from 'react'
 import { Loader } from "../ui/loader"
 import { DEFAULT_AVATAR, getDefaultUser, getUser, getUsers } from "./user"
 
-export function ChangeUserDialog({ children, setDialogOpen, closeNav }) {
+export function UpdateUserDialog({ children, setDialogOpen, closeNav }) {
     const { profile, setProfile } = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);

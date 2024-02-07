@@ -1,14 +1,14 @@
 import { DarkModeSwitch } from "@/components/misc/darkMode";
 import { Toaster } from "@/components/ui/toaster";
 import { useState, createContext, useEffect } from "react";
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Counter from "./Counter";
 import Names from "./Names";
 import Notes from "./Notes";
 import { NavMenu } from "./NavMenu";
 
-import { getDefaultUser, getUsers } from "./components/profile/user";
-import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
+import { fetchLastProfile } from "./components/profile/user";
+import { Loader } from "./components/ui/loader";
 
 export const UserContext = createContext(null);
 
@@ -17,12 +17,27 @@ function App() {
     const [curNote, setCurrentNote] = useState(null);
     const [count, setCount] = useState(0);
     const [name, setName] = useState(null);
-    const [profile, setProfile] = useState(getDefaultUser());
+    const [profile, setProfile] = useState(null);
     const [isDarkMode, toggleDarkMode] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchLastProfile().then((p) => { setProfile(p); setTimeout(() => { setLoading(false) }, 200) })
+    }, [])
+
+    useEffect(() => {
+        if (profile !== null) localStorage.setItem("profile", profile.id);
+    }, [profile])
 
     return (
         <UserContext.Provider value={{ isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode, profile: profile, setProfile: setProfile }}>
+
             <BrowserRouter>
+                {loading ?
+                    <div className="absolute w-full h-full top-0 left-0 bg-opacity-15 dark:bg-opacity-30 bg-black" style={{ zIndex: 9999 }}>
+                        <Loader></Loader>
+                    </div>
+                    : ""}
                 <nav className=" bg-sky-400 dark:bg-zinc-950 flex gap-4 p-4 text-white items-center shadow shadow-zinc-200 dark:shadow-none drop-shadow-sm z-50">
                     <NavMenu></NavMenu>
                     <div className="ml-auto">
@@ -38,7 +53,7 @@ function App() {
                 </Routes>
                 <Toaster />
             </BrowserRouter>
-        </UserContext.Provider>
+        </UserContext.Provider >
     );
 }
 
