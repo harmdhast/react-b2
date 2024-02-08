@@ -35,7 +35,7 @@ async function getUserByName(username) {
 }
 
 async function updateUser(id, props) {
-    await fetchData(`${API_HOST}/profiles?id=${id}`, {
+    await fetchData(`${API_HOST}/profiles/${id}`, {
         method: "put",
         headers: {
             'Content-Type': 'application/json',

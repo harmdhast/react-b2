@@ -19,6 +19,7 @@ import { UserContext } from "./App"
 import { CreateUserDialog } from "./components/profile/create_user"
 import { DelUserDialog } from "./components/profile/del_user"
 import { ChangeUserDialog } from "./components/profile/change_user"
+import { UpdateUserDialog } from "./components/profile/update_user"
 
 const components = [
     {
@@ -78,6 +79,7 @@ export function NavMenu() {
 
 
                                     profile === null ? "" :
+
                                         <div className="flex">
                                             <Avatar className="w-7 h-7 mr-2">
                                                 <AvatarImage src={profile.avatar} />
@@ -90,14 +92,15 @@ export function NavMenu() {
                                 <NavigationMenuContent onPointerLeave={(e) => { if (dialogOpen) e.preventDefault() }}>
                                     <div className="flex gap-3 p-4 md:w-[400px] lg:w-[500px]">
                                         <NavigationMenuLink asChild>
-                                            <a
-                                                className="flex h-full w-32 select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md dark:hover:bg-zinc-800 hover:bg-zinc-200"
-                                            >
-                                                <img className="rounded-full" src={profile.avatar}></img>
-                                                <div className="mb-2 mt-4 text-base text-center font-light text-ellipsis overflow-hidden">
-                                                    {profile.username}
-                                                </div>
-                                            </a>
+                                            <UpdateUserDialog setDialogOpen={setDialogOpen} closeNav={closeNav}>
+                                                <a
+                                                    className="flex h-full w-32 select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md dark:hover:bg-zinc-800 hover:bg-zinc-200"
+                                                >
+                                                    <img className="rounded-full" src={profile.avatar}></img>
+                                                    <div className="mb-2 mt-4 text-base text-center font-light text-ellipsis overflow-hidden">
+                                                        {profile.username}
+                                                    </div>
+                                                </a></UpdateUserDialog>
                                         </NavigationMenuLink>
                                         <div className="flex flex-col gap-2 justify-center items-center">
                                             <CreateUserDialog setDialogOpen={setDialogOpen} closeNav={closeNav}>
