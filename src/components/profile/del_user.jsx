@@ -25,13 +25,16 @@ import { UserContext } from "@/App";
 export function DelUserDialog({ children, setDialogOpen, closeNav }) {
     const { profile, setProfile } = useContext(UserContext);
     const [inputName, setInputName] = useState("");
-    const [isError, setIsError] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        getUsers().then((u) => setUsers(u || []));
+        setLoading(true);
+        getUsers().then((u) => {
+            setUsers(u || []);
+            setLoading(false);
+        });
     }, [inputName])
 
     const handleValueChange = (e) => {
@@ -44,7 +47,7 @@ export function DelUserDialog({ children, setDialogOpen, closeNav }) {
         const name = inputName.trim();
 
         if (name === "") {
-            displayError("Vous devez choisir un utilisateur.");
+            setError("Vous devez choisir un utilisateur.");
             setLoading(false);
             return;
         }
@@ -52,28 +55,18 @@ export function DelUserDialog({ children, setDialogOpen, closeNav }) {
         const user = await getUserByName(name);
 
         if (user === null) {
-            displayError("Cet utilisateur n'existe pas.");
+            setError("Cet utilisateur n'existe pas.");
             setInputName("");
             setLoading(false);
             return;
         };
 
         await deleteUser(user.id)
-        resetError();
+        setError("");
         if (user.id === profile.id) setProfile(getDefaultUser());
         setLoading(false);
         closeNav();
     };
-
-    function resetError() {
-        setIsError(false);
-        setError("");
-    }
-
-    function displayError(text) {
-        setIsError(true);
-        setError(text);
-    }
 
     return (
         <Dialog onOpenChange={(e) => { setDialogOpen(e); if (e === false) closeNav(); }}>
@@ -106,7 +99,7 @@ export function DelUserDialog({ children, setDialogOpen, closeNav }) {
                         </Loader> : ""}
                     </div>
                     <span className="text-red-500 text-sm w-full text-right">
-                        {isError ? error : ""}
+                        {error}
                     </span>
                 </div>
                 <DialogFooter>

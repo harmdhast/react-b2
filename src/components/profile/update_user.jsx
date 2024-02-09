@@ -8,10 +8,9 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useContext, useEffect, useState } from 'react'
 import { Loader } from "../ui/loader"
-import { DEFAULT_AVATAR, getDefaultUser, getUser, getUserByName, getUsers, updateUser } from "./user"
+import { getDefaultUser, getUserByName, getUsers, updateUser } from "./user"
 import { Label } from "@radix-ui/react-label"
 import { Input } from "../ui/input"
 
@@ -28,8 +27,9 @@ export function UpdateUserDialog({ children, setDialogOpen, closeNav }) {
             u = [...u, getDefaultUser()];
             u = u.filter((user) => user.username !== profile.username);
             setUsers(u);
+            setLoading(false);
         });
-        setLoading(false);
+
     }, [])
 
     async function handleAccept(e) {

@@ -72,7 +72,7 @@ export function ChangeUserDialog({ children, setDialogOpen, closeNav }) {
                                             className="flex h-full w-32 select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md dark:hover:bg-zinc-800 hover:bg-zinc-200 cursor-pointer"
                                             onClick={(e) => handleAccept(user.id)}
                                         >
-                                            <img className="rounded-full" src={user.avatar}></img>
+                                            <img className="rounded-full w-20 h-20 object-cover" src={user.avatar}></img>
                                             <div className="mb-2 mt-4 text-base text-center font-light text-ellipsis overflow-hidden dark:text-zinc-200">
                                                 {user.username}
                                             </div>

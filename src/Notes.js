@@ -222,7 +222,16 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                         <ScrollArea className=" h-5/6 rounded-none rounded-b border border-zinc-800 border-t-0">
                             {
                                 notes.map((note) =>
-                                    <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 border-b rounded-none " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
+                                    <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 border-b rounded-none border-l-8 dark:border-transparent " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
+                                        <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
+                                            {
+                                                note["starred"] ?
+                                                    <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
+                                                    <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
+                                            }
+
+                                        </Button>
+
                                         <div className="m-1 flex flex-col text-left">
                                             <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
                                             <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
@@ -254,14 +263,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                                                 checked={note["checked"]}
                                                 className="dark:data-[state=checked]:bg-green-300 dark:data-[state=checked]:border-green-300 w-7 h-7 text-3xl"
                                             />
-                                            <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
-                                                {
-                                                    note["starred"] ?
-                                                        <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
-                                                        <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
-                                                }
 
-                                            </Button>
 
                                         </div>
                                     </Link>)

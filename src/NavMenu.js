@@ -81,7 +81,7 @@ export function NavMenu() {
                                     profile === null ? "" :
 
                                         <div className="flex">
-                                            <Avatar className="w-7 h-7 mr-2">
+                                            <Avatar className="w-7 h-7 mr-2 object-cover">
                                                 <AvatarImage src={profile.avatar} />
                                             </Avatar>
                                             {profile.username}</div>
@@ -96,7 +96,7 @@ export function NavMenu() {
                                                 <a
                                                     className="flex h-full w-32 select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md dark:hover:bg-zinc-800 hover:bg-zinc-200"
                                                 >
-                                                    <img className="rounded-full" src={profile.avatar}></img>
+                                                    <img className="rounded-full w-20 h-20 object-cover" src={profile.avatar}></img>
                                                     <div className="mb-2 mt-4 text-base text-center font-light text-ellipsis overflow-hidden">
                                                         {profile.username}
                                                     </div>
@@ -126,6 +126,13 @@ export function NavMenu() {
                                 </NavigationMenuContent>}
                         </NavigationMenuItem>
                         <NavigationMenuItem>
+                            <Link to="/notes">
+                                <NavigationMenuLink className={"group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 font-medium transition-colors text-lg bg-sky-400 hover:bg-sky-600 dark:bg-zinc-950 hover:dark:bg-zinc-800"}>
+                                    Notes
+                                </NavigationMenuLink>
+                            </Link>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
                             <Link to="/count">
                                 <NavigationMenuLink className={"group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 font-medium transition-colors text-lg bg-sky-400 hover:bg-sky-600 dark:bg-zinc-950 hover:dark:bg-zinc-800"} >
                                     Compteur
@@ -139,13 +146,7 @@ export function NavMenu() {
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <Link to="/notes">
-                                <NavigationMenuLink className={"group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 font-medium transition-colors text-lg bg-sky-400 hover:bg-sky-600 dark:bg-zinc-950 hover:dark:bg-zinc-800"}>
-                                    Notes
-                                </NavigationMenuLink>
-                            </Link>
-                        </NavigationMenuItem>
+
                     </NavigationMenuList>
                 </NavigationMenu >
                 :
