@@ -8,7 +8,7 @@ import { zinc } from 'tailwindcss/colors';
 import { UserContext } from './App';
 
 function Counter({ count, setCount }) {
-    const { isDarkMode, toggleDarkMode } = useContext(UserContext);
+    const { theme } = useContext(UserContext);
     const [animDirection, setAnimDirection] = useState(true); // Direction de l'animation du compteur
     const [baseColor, setBaseColor] = useState("white");
 
@@ -36,8 +36,8 @@ function Counter({ count, setCount }) {
     }
 
     useEffect(() => {
-        setBaseColor(isDarkMode ? "white" : zinc["800"])
-    }, [isDarkMode])
+        setBaseColor(theme ? "white" : zinc["800"])
+    }, [theme])
 
     // Animation compteur
     const transitions = useTransition([count], {

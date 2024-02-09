@@ -9,16 +9,21 @@ import { NavMenu } from "./NavMenu";
 
 import { fetchLastProfile } from "./components/profile/user";
 import { Loader } from "./components/ui/loader";
+import { useLocalStorage } from "./components/misc/useLocalStorage";
 
 export const UserContext = createContext(null);
 
 function App() {
-    const [notes, setNotes] = useState(null);
-    const [curNote, setCurrentNote] = useState(null);
+    // Other apps
     const [count, setCount] = useState(0);
     const [name, setName] = useState(null);
+
+    const [notes, setNotes] = useState(null);
+    const [curNote, setCurrentNote] = useState(null);
+
+
     const [profile, setProfile] = useState(null);
-    const [isDarkMode, toggleDarkMode] = useState(null);
+    const [theme, setTheme] = useLocalStorage("darkmode", null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,7 +35,7 @@ function App() {
     }, [profile])
 
     return (
-        <UserContext.Provider value={{ isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode, profile: profile, setProfile: setProfile }}>
+        <UserContext.Provider value={{ theme, setTheme, profile, setProfile }}>
 
             <BrowserRouter>
                 {loading ?
