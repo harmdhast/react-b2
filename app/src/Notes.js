@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebouncedEffect } from "./components/notes/useDebouncedEffect";
 import { Button } from "./components/ui/button";
+import { getNotes, getLastNote, createNewNote, adeleteNote, asaveNote, astarNote, acheckNote } from "./components/notes/api";
 
 function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const [nameInputValue, setNameInputValue] = useState("");
@@ -28,11 +29,8 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     const { id } = useParams();
 
     async function fetchNotes() {
-        const response = await fetch("http://localhost:4000/notes?_sort=starred,updated&_order=desc,desc");
-        const data = await response.json();
         try {
-            //await data.sort(((a, b) => a.updated - b.updated));
-            setNotes(data);
+            setNotes(await getNotes());
         } catch (error) {
             return;
         }
@@ -63,28 +61,9 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
         });
     }, []);
 
-    async function getLastNote() {
-        const resp = await fetch("http://localhost:4000/notes?_sort=updated&_order=desc&_limit=1");
-        return await resp.json();
-    }
-
     // TODO: Créer la note en local et l'upload en save
     async function newNote() {
-        await fetch("http://localhost:4000/notes", {
-            method: "post",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "name": "Nouvelle note",
-                "text": "Ma super nouvelle note !",
-                "created": new Date().getTime(),
-                "updated": new Date().getTime(),
-                "starred": false,
-                "checked": false
-            })
-        })
-
+        await createNewNote()
         await fetchNotes();
         let note = await getLastNote();
         navigate(`/notes/${note[0].id}`);
@@ -93,9 +72,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     };
 
     async function deleteNote(id) {
-        fetch(`http://localhost:4000/notes/${id}`, {
-            method: "DELETE"
-        });
+        adeleteNote();
         setNotesWrapper(notes.filter(n => n.id !== id));
         navigate(`/notes`);
     }
@@ -105,13 +82,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
             ...curNote,
             updated: new Date().getTime()
         }
-        fetch(`http://localhost:4000/notes/${id}`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newNote)
-        }).then(() => {
+        asaveNote().then(() => {
             toast({
                 title: "Note enregistrée.",
                 description: `${newNote["name"]} sauvegardée avec succès.`,
@@ -136,13 +107,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
             starred: !note["starred"],
             updated: new Date().getTime()
         }
-        fetch(`http://localhost:4000/notes/${id}`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newNote)
-        });
+        astarNote(id, newNote);
         setCurrentNote(newNote);
         setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
     }
@@ -153,13 +118,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
             ...note,
             checked: !note["checked"]
         }
-        fetch(`http://localhost:4000/notes/${id}`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newNote)
-        });
+        acheckNote(id, newNote);
         setCurrentNote(newNote);
         setNotesWrapper([newNote, ...notes.filter(n => n.id !== id)]);
     }
@@ -221,52 +180,53 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
                     {isLoading ? <Loader className="h-5/6"></Loader> :
                         <ScrollArea className=" h-5/6 rounded-none rounded-b border border-zinc-800 border-t-0">
                             {
-                                notes.map((note) =>
-                                    <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 border-b rounded-none border-l-8 dark:border-transparent " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
-                                        <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
-                                            {
-                                                note["starred"] ?
-                                                    <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
-                                                    <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
-                                            }
-
-                                        </Button>
-
-                                        <div className="m-1 flex flex-col text-left">
-                                            <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
-                                            <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
-                                        </div>
-                                        <div className="h-full flex flex-row gap-2 justify-center items-center">
-
-                                            <Button variant="outline" size="icon" asChild>
-                                                <alertDialog.AlertDialog>
-                                                    <alertDialog.AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></alertDialog.AlertDialogTrigger>
-                                                    <alertDialog.AlertDialogContent className="dark:bg-zinc-900">
-                                                        <alertDialog.AlertDialogHeader>
-                                                            <alertDialog.AlertDialogTitle className="text-red-600">Supprimer la note ?</alertDialog.AlertDialogTitle>
-                                                            <alertDialog.AlertDialogDescription>
-                                                                Voulez-vous envoyer la note à jamais avec papa Johnny ?
-                                                            </alertDialog.AlertDialogDescription>
-                                                        </alertDialog.AlertDialogHeader>
-                                                        <alertDialog.AlertDialogFooter>
-                                                            <alertDialog.AlertDialogCancel className="dark:bg-white">Annuler</alertDialog.AlertDialogCancel>
-                                                            <alertDialog.AlertDialogAction className="dark:bg-red-600 dark:text-white dark:hover:bg-red-800" onClick={() => { deleteNote(note["id"]) }}>Supprimer</alertDialog.AlertDialogAction>
-                                                        </alertDialog.AlertDialogFooter>
-                                                    </alertDialog.AlertDialogContent>
-                                                </alertDialog.AlertDialog>
-
+                                notes === null ? "" :
+                                    notes.map((note) =>
+                                        <Link to={"/notes/" + note["id"]} className={"group flex flex-row h-full items-center justify-around w-full shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 border-b rounded-none border-l-8 dark:border-transparent " + ((curNote && note["id"] === curNote["id"]) ? (" border-l-8 " + (curNote["checked"] ? " dark:border-l-green-300  " : " dark:border-l-gray-50")) : "")} key={note["id"]}>
+                                            <Button variant="outline" size="icon" asChild onClick={() => { starNote(note["id"]) }}>
+                                                {
+                                                    note["starred"] ?
+                                                        <StarFilledIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarFilledIcon> :
+                                                        <StarIcon className=" text-yellow-300 opacity-50 hover:opacity-100 transition-opacity h-7 w-7 dark:bg-transparent border-0"></StarIcon>
+                                                }
 
                                             </Button>
-                                            <Checkbox
-                                                id="checked"
-                                                onClick={() => { checkNote(note["id"]) }}
-                                                checked={note["checked"]}
-                                                className="dark:data-[state=checked]:bg-green-300 dark:data-[state=checked]:border-green-300 w-7 h-7 text-3xl"
-                                            />
+
+                                            <div className="m-1 flex flex-col text-left">
+                                                <div className={" overflow-hidden max-w-32 whitespace-nowrap text-ellipsis font-bold " + (note["checked"] ? " text-green-300" : "")}>{note["name"]}</div>
+                                                <div className="Note-link-lastUpdatedAt">{new Date(note["updated"]).toDateString()}</div>
+                                            </div>
+                                            <div className="h-full flex flex-row gap-2 justify-center items-center">
+
+                                                <Button variant="outline" size="icon" asChild>
+                                                    <alertDialog.AlertDialog>
+                                                        <alertDialog.AlertDialogTrigger><TrashIcon className=" text-red-600 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"></TrashIcon></alertDialog.AlertDialogTrigger>
+                                                        <alertDialog.AlertDialogContent className="dark:bg-zinc-900">
+                                                            <alertDialog.AlertDialogHeader>
+                                                                <alertDialog.AlertDialogTitle className="text-red-600">Supprimer la note ?</alertDialog.AlertDialogTitle>
+                                                                <alertDialog.AlertDialogDescription>
+                                                                    Voulez-vous envoyer la note à jamais avec papa Johnny ?
+                                                                </alertDialog.AlertDialogDescription>
+                                                            </alertDialog.AlertDialogHeader>
+                                                            <alertDialog.AlertDialogFooter>
+                                                                <alertDialog.AlertDialogCancel className="dark:bg-white">Annuler</alertDialog.AlertDialogCancel>
+                                                                <alertDialog.AlertDialogAction className="dark:bg-red-600 dark:text-white dark:hover:bg-red-800" onClick={() => { deleteNote(note["id"]) }}>Supprimer</alertDialog.AlertDialogAction>
+                                                            </alertDialog.AlertDialogFooter>
+                                                        </alertDialog.AlertDialogContent>
+                                                    </alertDialog.AlertDialog>
 
 
-                                        </div>
-                                    </Link>)
+                                                </Button>
+                                                <Checkbox
+                                                    id="checked"
+                                                    onClick={() => { checkNote(note["id"]) }}
+                                                    checked={note["checked"]}
+                                                    className="dark:data-[state=checked]:bg-green-300 dark:data-[state=checked]:border-green-300 w-7 h-7 text-3xl"
+                                                />
+
+
+                                            </div>
+                                        </Link>)
                             }
                         </ScrollArea>}
 

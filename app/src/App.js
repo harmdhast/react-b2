@@ -23,7 +23,7 @@ function App() {
 
 
     const [profile, setProfile] = useState(null);
-    const [theme, setTheme] = useLocalStorage("darkmode", null);
+    const [theme, setTheme] = useLocalStorage("darkmode", true);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

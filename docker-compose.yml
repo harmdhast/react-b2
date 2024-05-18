@@ -1,0 +1,44 @@
+services:
+  react-app:
+    container_name: react-app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        API_HOST: ${REACT_APP_API_HOST}
+    depends_on:
+      - json-server
+    networks:
+      - my-network
+
+  json-server:
+    container_name: json-server
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    volumes:
+      - db-volume:/app
+
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: nginx:1.26.0-alpine3.19
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - "${EXPOSED_PORT:-8080}:${NGINX_PORT:-80}"
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+      - NGINX_PORT=${NGINX_PORT:-80}
+    networks:
+      - my-network
+    depends_on:
+      - json-server
+      - react-app
+
+networks:
+  my-network:
+    
+volumes:
+  db-volume:

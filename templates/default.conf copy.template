@@ -1,0 +1,30 @@
+upstream react-app {
+    server react-app;
+}
+
+upstream json-server {
+    server json-server:3000;
+}
+
+server {
+    listen ${NGINX_PORT};
+    server_name ${NGINX_HOST};
+
+    location = /api/v1 {
+        return 403;
+    }
+
+    location = /api/v1/ {
+        return 403;
+    }
+
+    location / {
+        proxy_pass http://reactapp;
+        include /etc/nginx/includes/proxy.conf;
+    }
+
+    location ~ /api/ {
+        proxy_pass http://json-server:3000;
+        include /etc/nginx/includes/proxy.conf;
+    }
+}

@@ -1,0 +1,22 @@
+upstream app {
+    server react-app;
+}
+
+upstream api {
+    server json-server:4000;
+}
+
+server {
+    listen ${NGINX_PORT};
+    server_name ${NGINX_HOST};
+
+    location / {
+        proxy_pass http://app;
+        #include /etc/nginx/includes/proxy.conf;
+    }
+
+    location ~ /api/ {
+        proxy_pass http://api;
+        #include /etc/nginx/includes/proxy.conf;
+    }
+}

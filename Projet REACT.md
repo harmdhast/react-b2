@@ -1,7 +1,5 @@
 ---
-
 kanban-plugin: basic
-
 ---
 
 ## À faire
@@ -12,18 +10,16 @@ kanban-plugin: basic
 - [ ] Afficher les étiquettes à côté du titre des notes dans la liste
 - [ ] Ajouter des étiquettes à une note
 
-
 ## En cours
 
-- [ ] **Refactoriser les appels réseau**<br>Extraire les appels à `fetch` et `json` dans une fonction réutilisable.
 - [ ] **Afficher les messages d'erreur**<br>Erreurs potentielles :<br><br><br>\- au chargement des notes<br>\- à la création d’une note<br>\- à la modification<br>\- à la suppression
 - [ ] **Afficher le nom de l'utilisateur dans une barre de statut**<br>Dans une barre de statut générale, afficher le nom de l’utilisateur (`GET http://localhost:4000/profile`).
 - [ ] **Ajouter un libellé "Enregistré" après la modification d'une note**<br>- Ne pas afficher le libellé au chargement d’une note<br>- Après l’enregistrement d’une modification, l’afficher<br>- Lorsque le titre ou le contenu est à nouveau modifié, ne plus l’afficher
-- [ ] **Enregistrer automatiquement les modifications d'une note**<br>Utiliser un hook personnalisé :<br><br>```javascript<br>export const useDebouncedEffect = (effect, deps, delay) => {<br>  useEffect(() => {<br>    const handler = setTimeout(() => effect(), delay);<br><br>    return () => clearTimeout(handler);<br>    // eslint-disable-next-line react-hooks/exhaustive-deps<br>  }, [...(deps || []), delay]);<br>};<br>```
-
+- [ ] **Enregistrer automatiquement les modifications d'une note**<br>Utiliser un hook personnalisé :<br><br>`javascript<br>export const useDebouncedEffect = (effect, deps, delay) => {<br>  useEffect(() => {<br>    const handler = setTimeout(() => effect(), delay);<br><br>    return () => clearTimeout(handler);<br>    // eslint-disable-next-line react-hooks/exhaustive-deps<br>  }, [...(deps || []), delay]);<br>};<br>`
 
 ## Done
 
+- [ ] **Refactoriser les appels réseau**<br>Extraire les appels à `fetch` et `json` dans une fonction réutilisable.
 - [ ] **Afficher un loader pendant le chargement des notes**<br>Créer un composant `<Loader />` réutilisable partout (au chargement de la liste, au chargement d’une note, à la modification d’une note…)
 - [ ] Afficher le contenu d'une note
 - [ ] Supprimer une note
@@ -36,11 +32,10 @@ kanban-plugin: basic
 - [ ] Marquer une note comme faite (`checked`)
 - [ ] **Afficher un panneau de rendu Markdown**<br>Rend le contenu de la note au format Markdown visuellement.<br><br>Voir [https://simplenote.com/](https://simplenote.com/ "smartCard-inline").
 
-
-
-
 %% kanban:settings
+
 ```
 {"kanban-plugin":"basic"}
 ```
+
 %%

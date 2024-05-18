@@ -1,0 +1,11 @@
+{
+  "name": "react-b2-api",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "json-server": "^0.17.4"
+  },
+  "scripts": {
+    "start": "npx json-server --watch db.json --port 4000 --host 0.0.0.0 --routes routes.json"
+  }
+}

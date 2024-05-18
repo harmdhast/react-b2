@@ -1,4 +1,4 @@
-const API_HOST = "http://localhost:4000";
+const API_HOST = process.env.REACT_APP_API_HOST;
 const DEFAULT_AVATAR = "https://github.com/ghost.png";
 
 async function fetchData(url, options = {}) {
