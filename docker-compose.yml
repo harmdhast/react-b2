@@ -5,7 +5,7 @@ services:
       context: ./app
       dockerfile: Dockerfile
       args:
-        API_HOST: ${REACT_APP_API_HOST}
+        API_HOST: ${API_URL:-http://${NGINX_HOST}:${EXPOSED_PORT}/api/v1}
     depends_on:
       - json-server
     networks:

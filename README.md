@@ -6,7 +6,7 @@ Application react réalisée dans le cadre du cours ESGI B2.
 
 1. Cloner le repo
 2. Lancer le stack
-`docker compose up`
+   `docker compose up`
 3. Par défaut accessible sur `http://localhost:8080`
 
 ## Configuration
@@ -14,8 +14,8 @@ Application react réalisée dans le cadre du cours ESGI B2.
 Dans le .env à la racine du repo
 
 ```
-NGINX_HOST="localhost" # Hostname de l'application
-NGINX_PORT="80" # Port par défaut nginx
-EXPOSED_PORT="8080" # Port exposé de l'application
-REACT_APP_API_HOST="http://localhost:8080/api/v1" # Url de l'api, format : http://{NGINX_HOST}:{EXPOSED_PORT}/api/v1
+NGINX_HOST="localhost"
+EXPOSED_PORT="8080"
+# NGINX_PORT="80"
+# REACT_APP_API_HOST="http://localhost:8080/api/v1"
 ```
