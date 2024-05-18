@@ -72,7 +72,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
     };
 
     async function deleteNote(id) {
-        adeleteNote();
+        adeleteNote(id);
         setNotesWrapper(notes.filter(n => n.id !== id));
         navigate(`/notes`);
     }
@@ -82,7 +82,7 @@ function Notes({ notes, setNotes, curNote, setCurrentNote }) {
             ...curNote,
             updated: new Date().getTime()
         }
-        asaveNote().then(() => {
+        asaveNote(id, newNote).then(() => {
             toast({
                 title: "Note enregistrée.",
                 description: `${newNote["name"]} sauvegardée avec succès.`,
